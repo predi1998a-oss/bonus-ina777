@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "functions": {
+    "api/kirim-data.js": {
+      "runtime": "@vercel/node@3"
+    }
+  },
+  "routes": [
+    { "src": "/kirim-data", "dest": "/api/kirim-data" }
+  ]
+}
