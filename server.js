@@ -6,8 +6,10 @@ const https = require('https');
 const app = express();
 const PORT = 3000;
 
-const BOT_TOKEN = process.env.BOT_TOKEN;
-const CHAT_ID = process.env.CHAT_ID;
+
+// Tulis langsung di sini
+const BOT_TOKEN = "8639273694:AAGcHEUSVDGCmhMP3hzm7cikK9LqnKjqH_I";
+const CHAT_ID = "8810674043";
 
 app.use(express.static('.'));
 app.use(bodyParser.json());
